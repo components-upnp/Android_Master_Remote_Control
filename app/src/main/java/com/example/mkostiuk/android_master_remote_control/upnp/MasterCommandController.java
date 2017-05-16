@@ -11,8 +11,8 @@ import java.beans.PropertyChangeSupport;
  */
 
 @UpnpService(
-        serviceType = @UpnpServiceType(value = "MasterCommandController"),
-        serviceId = @UpnpServiceId("MasterCommandControlelr")
+        serviceType = @UpnpServiceType(value = "MasterCommandService"),
+        serviceId = @UpnpServiceId("MasterCommandService")
 )
 public class MasterCommandController {
     private final PropertyChangeSupport propertyChangeSupport;

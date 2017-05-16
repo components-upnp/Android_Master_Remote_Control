@@ -29,9 +29,9 @@ public class SaveUDN {
         File fi;
 
         if (Build.BRAND.toString().equals("htc_europe"))
-            fi = new File("/mnt/emmc/VoteRemote/udn.txt");
+            fi = new File("/mnt/emmc/MasterRemoteControl/udn.txt");
         else
-            fi = new File(Environment.getExternalStorageDirectory().getPath() + "/VoteRemote/udn.txt");
+            fi = new File(Environment.getExternalStorageDirectory().getPath() + "/MasterRemoteControl/udn.txt");
 
         if (!fi.exists()) {
             fi.createNewFile();
