@@ -30,6 +30,8 @@ repositories {
     }
 }
 
+
+
 dependencies {
     compile 'com.shamanland:xdroid-toaster:0.0.10'
     compile fileTree(dir: 'libs', include: ['*.jar'])
