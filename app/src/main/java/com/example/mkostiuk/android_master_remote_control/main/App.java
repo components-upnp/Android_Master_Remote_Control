@@ -17,18 +17,23 @@ import com.example.mkostiuk.android_master_remote_control.upnp.Service;
 import com.example.mkostiuk.android_master_remote_control.xml.GenerateurXml;
 
 import org.fourthline.cling.android.AndroidUpnpServiceImpl;
+import org.w3c.dom.Document;
 
 import java.io.File;
 import java.util.Timer;
 import java.util.TimerTask;
 
+import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.transform.TransformerException;
+
 public class App extends AppCompatActivity {
 
-    private Button connexion, start, stop, validation;
+    private Button connexion, start, stop;
     private EditText keyText;
     private Service service;
     private ServiceConnection serviceConnection;
     private GenerateurXml gen;
+    private String key;
 
     public void activate(Button ... buttons) {
         for (Button b : buttons)
@@ -40,14 +45,19 @@ public class App extends AppCompatActivity {
             b.setClickable(false);
     }
 
-    public void init() {
+    public void setButtonActivityLayout(){
         connexion = (Button) findViewById(R.id.connexionButton);
         start = (Button) findViewById(R.id.startButton);
         stop = (Button) findViewById(R.id.stopButton);
-        validation = (Button) findViewById(R.id.validationButton);
-        keyText = (EditText) findViewById(R.id.editText);
+    }
+
+    public void init() {
+
+        setButtonActivityLayout();
+
+       // keyText = (EditText) findViewById(R.id.editText);
         activate(connexion);
-        deactivate(start, stop, validation);
+        deactivate(start, stop);
 
         StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
 
@@ -96,22 +106,40 @@ public class App extends AppCompatActivity {
     }
 
     public void onClickValidation(View view) {
+        key = String.valueOf(keyText.getText());
+        setContentView(R.layout.activity_app);
+        setButtonActivityLayout();
         activate(start);
-        deactivate(validation, connexion, stop);
+        deactivate( connexion, stop);
     }
 
     public void onClickConnexion(View view) {
-        activate(validation);
+        activate();
         deactivate(connexion, stop, start);
+        setContentView(R.layout.key_layout);
+        keyText = (EditText) findViewById(R.id.editText);
     }
 
-    public void onClickStart(View view) {
+    public void onClickStart(View view) throws TransformerException, ParserConfigurationException {
         activate(stop);
-        deactivate(validation, start, connexion);
+        deactivate( start, connexion);
+
+        String com = genCommande();
+
+        System.err.println(com);
+
+        service.getMasterCommandService().getManager().getImplementation()
+                .setCommande(com);
     }
 
-    public void onClickStop(View view) {
+    public void onClickStop(View view) throws TransformerException, ParserConfigurationException {
         activate(start);
-        deactivate(stop, validation, connexion);
+        deactivate(stop, connexion);
+        service.getMasterCommandService().getManager().getImplementation()
+                .setCommande(genCommande());
+    }
+
+    public String genCommande() throws TransformerException, ParserConfigurationException {
+        return  gen.getDocXml(service.getUdn().toString(),"CENTRE",key);
     }
 }
